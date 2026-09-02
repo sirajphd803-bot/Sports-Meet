@@ -431,11 +431,17 @@ document.addEventListener("DOMContentLoaded", function() {
             opt.textContent = ev;
             filterEvent.appendChild(opt);
         });
-    }
-    function getChestNumber(category, index) {
+            function getChestNumber(category, gender, index) {
         let baseNumber = 100;
-        if (category === "Sub Junior") baseNumber = 200;
-        if (category === "Junior") baseNumber = 300;
+
+        if (category === "UP Kiddies") {
+            baseNumber = (gender === "Girls") ? 200 : 100; // Boys: 101+, Girls: 201+
+        } else if (category === "Sub Junior") {
+            baseNumber = (gender === "Girls") ? 500 : 300; // Boys: 301+, Girls: 501+
+        } else if (category === "Junior") {
+            baseNumber = (gender === "Girls") ? 700 : 600; // Boys: 601+, Girls: 701+
+        }
+
         return baseNumber + (index + 1);
     }
     function getFilteredData() {
@@ -458,8 +464,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return matchCat && matchGen && matchGrp && matchEv;
         });
     }
-
-    function renderTable() {
+            function renderTable() {
         const filteredData = getFilteredData();
         participantTableBody.innerHTML = "";
 
@@ -468,7 +473,31 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        const categoryCounters = { "UP Kiddies": 0, "Sub Junior": 0, "Junior": 0 };
+        // ഓരോ Category + Gender-നും വെവ്വേറെ എണ്ണാനുള്ള പുതിയ കൗണ്ടർ
+        const counters = {};
+
+        filteredData.forEach(p => {
+            const key = p.category + "_" + p.gender;
+            if (counters[key] === undefined) counters[key] = 0;
+
+            // ഇവിടെ p.gender കൂടി പാസ്സ് ചെയ്യുന്നു
+            const chestNo = getChestNumber(p.category, p.gender, counters[key]);
+            counters[key]++;
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td><span class="badge bg-primary fs-6">${chestNo}</span></td>
+                <td class="text-start">${p.name}</td>
+                <td>${p.classDiv || 'N/A'}</td>
+                <td><span class="badge bg-secondary">${p.group || 'N/A'}</span></td>
+                <td>${p.category}</td>
+                <td>${p.gender}</td>
+                <td>${p.items}</td>
+            `;
+            participantTableBody.appendChild(tr);
+        });
+            }
+         const categoryCounters = { "UP Kiddies": 0, "Sub Junior": 0, "Junior": 0 };
 
         filteredData.forEach(p => {
             const chestNo = getChestNumber(p.category, categoryCounters[p.category] || 0);
@@ -487,7 +516,6 @@ document.addEventListener("DOMContentLoaded", function() {
             participantTableBody.appendChild(tr);
         });
     }
-
     document.getElementById("toggleAdminBtn").addEventListener("click", function() {
         const adminContent = document.getElementById("adminContent");
         const loginBox = document.getElementById("loginBox");
@@ -541,12 +569,15 @@ document.addEventListener("DOMContentLoaded", function() {
             doc.setFontSize(13);
             doc.text(title, 14, 15);
 
-            const categoryCounters = { "UP Kiddies": 0, "Sub Junior": 0, "Junior": 0 };
+            const counters = {};
 
-            const pdfData = filteredData.map((p) => {
-                const chestNo = getChestNumber(p.category, categoryCounters[p.category] || 0);
-                if (categoryCounters[p.category] !== undefined) categoryCounters[p.category]++;
+const pdfData = filteredData.map((p) => {
+    const key = p.category + "_" + p.gender;
+    if (counters[key] === undefined) counters[key] = 0;
 
+    const chestNo = getChestNumber(p.category, p.gender, counters[key]);
+    counters[key]++;
+    
                 return [
                     chestNo,
                     p.name,
