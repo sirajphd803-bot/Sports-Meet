@@ -432,14 +432,12 @@ document.addEventListener("DOMContentLoaded", function() {
             filterEvent.appendChild(opt);
         });
     }
-
     function getChestNumber(category, index) {
-        let prefix = "1";
-        if (category === "Sub Junior") prefix = "2";
-        if (category === "Junior") prefix = "3";
-        return prefix + String(index + 1).padStart(2, '0');
+        let baseNumber = 100;
+        if (category === "Sub Junior") baseNumber = 200;
+        if (category === "Junior") baseNumber = 300;
+        return baseNumber + (index + 1);
     }
-
     function getFilteredData() {
         const cat = filterCategory.value;
         const gen = filterGender.value;
