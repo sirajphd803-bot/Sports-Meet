@@ -432,11 +432,18 @@ document.addEventListener("DOMContentLoaded", function() {
             filterEvent.appendChild(opt);
         });
     }
-    function getChestNumber(category, index) {
-        let prefix = "1";
-        if (category === "Sub Junior") prefix = "2";
-        if (category === "Junior") prefix = "3";
-        return prefix + String(index + 1).padStart(2, '0');
+        function getChestNumber(category, gender, index) {
+        let baseNumber = 100;
+
+        if (category === "UP Kiddies") {
+            baseNumber = (gender === "Girls") ? 200 : 100; // Boys: 101+, Girls: 201+
+        } else if (category === "Sub Junior") {
+            baseNumber = (gender === "Girls") ? 500 : 300; // Boys: 301+, Girls: 501+
+        } else if (category === "Junior") {
+            baseNumber = (gender === "Girls") ? 700 : 600; // Boys: 601+, Girls: 701+
+        }
+
+        return baseNumber + (index + 1);
     }
 
     function getFilteredData() {
@@ -469,11 +476,14 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        const categoryCounters = { "UP Kiddies": 0, "Sub Junior": 0, "Junior": 0 };
+        const counters = {};
 
         filteredData.forEach(p => {
-            const chestNo = getChestNumber(p.category, categoryCounters[p.category] || 0);
-            if (categoryCounters[p.category] !== undefined) categoryCounters[p.category]++;
+            const key = p.category + "_" + p.gender;
+            if (counters[key] === undefined) counters[key] = 0;
+
+            const chestNo = getChestNumber(p.category, p.gender, counters[key]);
+            counters[key]++;
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -502,6 +512,7 @@ document.addEventListener("DOMContentLoaded", function() {
             this.textContent = "Unlock Admin";
         }
     });
+
     document.getElementById("verifyPinBtn").addEventListener("click", function() {
         const inputPin = document.getElementById("adminPin").value;
         if (inputPin === ADMIN_PIN) {
@@ -542,11 +553,14 @@ document.addEventListener("DOMContentLoaded", function() {
             doc.setFontSize(13);
             doc.text(title, 14, 15);
 
-            const categoryCounters = { "UP Kiddies": 0, "Sub Junior": 0, "Junior": 0 };
+            const counters = {};
 
             const pdfData = filteredData.map((p) => {
-                const chestNo = getChestNumber(p.category, categoryCounters[p.category] || 0);
-                if (categoryCounters[p.category] !== undefined) categoryCounters[p.category]++;
+                const key = p.category + "_" + p.gender;
+                if (counters[key] === undefined) counters[key] = 0;
+
+                const chestNo = getChestNumber(p.category, p.gender, counters[key]);
+                counters[key]++;
 
                 return [
                     chestNo,
