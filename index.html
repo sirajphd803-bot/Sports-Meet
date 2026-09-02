@@ -258,15 +258,15 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const ADMIN_PIN = "1234";
+    const ADMIN_PIN = "1010";
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxHZyr2MtHu1Z2LShpGtSpXV7z7lAK0nFB5zP53Rm-T2SuibUMRnl_IMAiAInuIx6SX4w/exec";
     
     let participants = [];
 
     const eventOptions = {
-        "UP Kiddies": ["50m", "100m", "Long Jump", "Shuttle Run"],
-        "Sub Junior": ["100m", "200m", "400m", "Long Jump", "High Jump", "Shot Put"],
-        "Junior": ["100m", "200m", "400m", "800m", "1500m", "Long Jump", "High Jump", "Shot Put", "Discus Throw"]
+        "UP Kiddies": ["50m", "100m", "Long Jump", "High Jump"],
+        "Sub Junior": ["100m", "200m", "400m", "600m", "Hurdles", "Long Jump", "High Jump", "Shot Put", "Discus",],
+        "Junior": ["100m", "200m", "400m", "800m", "1500m", "3000", "Hurdles(100m)", "Hurdles(400)", "Long Jump", "High Jump", "Trible Jump", "Shot Put", "Discus Throw", "]
     };
 
     const dobInput = document.getElementById("dob");
