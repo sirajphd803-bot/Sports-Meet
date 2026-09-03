@@ -169,8 +169,7 @@
                     </select>
                 </div>
             </div>
-
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-primary-custom">Save Entry</button>
+<button type="submit" id="submitBtn" class="btn btn-secondary btn-primary-custom" disabled>Registration Closed</button>
         </form>
     </div>
 
@@ -432,20 +431,6 @@ document.addEventListener("DOMContentLoaded", function() {
             filterEvent.appendChild(opt);
         });
     }
-        function getChestNumber(category, gender, index) {
-        let baseNumber = 100;
-
-        if (category === "UP Kiddies") {
-            baseNumber = (gender === "Girls") ? 200 : 100; // Boys: 101+, Girls: 201+
-        } else if (category === "Sub Junior") {
-            baseNumber = (gender === "Girls") ? 500 : 300; // Boys: 301+, Girls: 501+
-        } else if (category === "Junior") {
-            baseNumber = (gender === "Girls") ? 700 : 600; // Boys: 601+, Girls: 701+
-        }
-
-        return baseNumber + (index + 1);
-    }
-
     function getFilteredData() {
         const cat = filterCategory.value;
         const gen = filterGender.value;
@@ -553,26 +538,19 @@ document.addEventListener("DOMContentLoaded", function() {
             doc.setFontSize(13);
             doc.text(title, 14, 15);
 
-            const counters = {};
-
             const pdfData = filteredData.map((p) => {
-                const key = p.category + "_" + p.gender;
-                if (counters[key] === undefined) counters[key] = 0;
+    const chestNo = p.id || 'N/A';
 
-                const chestNo = getChestNumber(p.category, p.gender, counters[key]);
-                counters[key]++;
-
-                return [
-                    chestNo,
-                    p.name,
-                    p.classDiv || 'N/A',
-                    p.group || 'N/A',
-                    p.category,
-                    p.gender,
-                    p.items
-                ];
-            });
-
+    return [
+        chestNo,
+        p.name,
+        p.classDiv || 'N/A',
+        p.group || 'N/A',
+        p.category,
+        p.gender,
+        p.items
+    ];
+});
             doc.autoTable({
                 head: [['Chest No', 'Name', 'Class', 'Group', 'Category', 'Gender', 'Events']],
                 body: pdfData,
