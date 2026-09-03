@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const filterEvent = document.getElementById("filterEvent");
     const participantTableBody = document.getElementById("participantTableBody");
 
-    function calculateCategory() {
+        function calculateCategory() {
         const val = dobInput.value;
         if (!val) {
             categoryInput.value = "";
@@ -292,16 +292,31 @@ document.addEventListener("DOMContentLoaded", function() {
         const year = parseInt(val.substring(0, 4), 10);
         if (isNaN(year)) return;
 
-        let age = 2026 - year;
-
         let category = "";
-        if (age <= 10) {
+        
+        if (year === 2015 || year === 2016) {
             category = "UP Kiddies";
-        } else if (age <= 13) {
+        } else if (year === 2013 || year === 2014) {
             category = "Sub Junior";
-        } else {
+        } else if (year >= 2010 && year <= 2012) {
             category = "Junior";
+        } else {
+            category = "Not Eligible";
         }
+
+        categoryInput.value = category;
+        
+        if (category !== "Not Eligible") {
+            populateEventDropdowns(category);
+        } else {
+            [event1Select, event2Select, event3Select].forEach(select => {
+                select.innerHTML = '<option value="">Select Event</option>';
+                select.disabled = true;
+            });
+            alert("ഈ ജനനവർഷം (DOB) ഉള്ളവർക്ക് എൻട്രി അനുവാദമില്ല!");
+        }
+        }
+    
 
         categoryInput.value = category;
         populateEventDropdowns(category);
