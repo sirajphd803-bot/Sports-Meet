@@ -459,17 +459,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if(filteredData.length === 0) {
             participantTableBody.innerHTML = '<tr><td colspan="7">No records found</td></tr>';
             return;
-        }
-
-        const counters = {};
-
-        filteredData.forEach(p => {
-            const key = p.category + "_" + p.gender;
-            if (counters[key] === undefined) counters[key] = 0;
-
-            const chestNo = getChestNumber(p.category, p.gender, counters[key]);
-            counters[key]++;
-
+                    filteredData.forEach(p => {
+            const chestNo = p.id || 'N/A';
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td><span class="badge bg-primary fs-6">${chestNo}</span></td>
